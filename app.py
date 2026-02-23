@@ -14,16 +14,13 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
-# =========================
-# Load API Key
-# =========================
+# API
 load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
 
 
-# =========================
+
 # Database Setup
-# =========================
 conn = sqlite3.connect("chat_history.db", check_same_thread=False)
 cursor = conn.cursor()
 
@@ -55,13 +52,12 @@ def clear_chat_history():
     conn.commit()
 
 
-# =========================
-# Streamlit UI
-# =========================
+# UI using streamlt
+
 st.title("Groq RAG Chatbot")
 
 
-# Initialize session state
+
 if "messages" not in st.session_state:
     st.session_state.messages = load_chat_history()
 
@@ -69,9 +65,6 @@ if "vectorstore" not in st.session_state:
     st.session_state.vectorstore = None
 
 
-# =========================
-# Clear Chat Button (SIDEBAR)
-# =========================
 with st.sidebar:
     if st.button("🗑 Clear Chat"):
         st.session_state.messages = []
@@ -79,17 +72,13 @@ with st.sidebar:
         st.rerun()
 
 
-# =========================
-# Display Chat Messages
-# =========================
+
 for role, message in st.session_state.messages:
     with st.chat_message(role):
         st.write(message)
 
 
-# =========================
-# PDF Upload + RAG
-# =========================
+
 uploaded_file = st.file_uploader("Upload a PDF", type="pdf")
 
 if uploaded_file:
@@ -117,9 +106,9 @@ if uploaded_file:
     st.success("Document processed and ready for RAG!")
 
 
-# =========================
+
 # LLM Setup
-# =========================
+
 llm = ChatGroq(
     groq_api_key=groq_api_key,
     model="llama-3.1-8b-instant"
@@ -136,9 +125,9 @@ Question:
 """)
 
 
-# =========================
+
 # Chat Input
-# =========================
+
 user_input = st.chat_input("Ask something...")
 
 if user_input:
